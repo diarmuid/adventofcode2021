@@ -1,14 +1,13 @@
 import gzip
 
-
 with gzip.open("d1.txt.gz") as f:
     _fin = f.read()
     input = list(map(lambda x: int(x), _fin.splitlines()))
     # Part 1
     increasing_count = 0
     for i in range(len(input)-1):
-        if input[i] - input[i+1] < 0:
-            increasing_count += 1
+        increasing_count += int(input[i] - input[i+1] < 0)
+
     print("Part1=",increasing_count)
 
     # Part 2
