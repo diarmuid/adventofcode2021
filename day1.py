@@ -1,20 +1,23 @@
-#Day1 1
-with open("d1.txt") as f:
+import gzip
+
+
+with gzip.open("d1.txt.gz") as f:
     _fin = f.read()
     input = list(map(lambda x: int(x), _fin.splitlines()))
+    # Part 1
     increasing_count = 0
-    rolling_count = 0
     for i in range(len(input)-1):
         if input[i] - input[i+1] < 0:
             increasing_count += 1
-
     print("Part1=",increasing_count)
-    prev = None
+
+    # Part 2
+    prev_ave = None
     increasing_count = 0
     for i in range(len(input)):
-        val = sum(input[i:i+3])
-        if prev is not None:
-            increasing_count += int(val>prev)
-        prev = val
+        ave = sum(input[i:i+3])
+        if prev_ave is not None:
+            increasing_count += int(ave > prev_ave)
+        prev_ave = ave
     print("Part2=", increasing_count)
 
