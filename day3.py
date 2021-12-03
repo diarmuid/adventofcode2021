@@ -23,9 +23,9 @@ def filter_list(all_lines, gen_sel):
         _vert_line = map(lambda x: int(x[bposn]), filtered_list)
         tot_count = sum(_vert_line)
         tot_count_n = len(filtered_list) - tot_count
-        # Create my filters
-        filters = {CO2: str(int(tot_count >= tot_count_n)), O2: str(int(tot_count < tot_count_n))}
-        filter_bit = filters[gen_sel] # Which filter
+        # Create my filters. One is the inverse of the other
+        filters = {O2: str(int(tot_count >= tot_count_n)), CO2: str(int(tot_count < tot_count_n))}
+        filter_bit = filters[gen_sel] # Which filter do we want
         # Now reduce my list by filtering on the position and the bit selected
         filtered_list = list(filter(lambda x: x[bposn] == filter_bit, filtered_list))
         logging.debug("ListLen={} Bposn={} Filterb={}".format(len(filtered_list), bposn, filter_bit))
