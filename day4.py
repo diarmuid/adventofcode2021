@@ -3,6 +3,8 @@ import logging
 
 logging.basicConfig(level=logging.INFO)
 
+# Fall into old habits. Create a class for the board
+
 
 class Board(object):
     def __init__(self, lines):
@@ -30,24 +32,23 @@ class Board(object):
                     self._rows[r_idx].remove(c)
                 if len(self._rows[r_idx]) == 0:
                     logging.debug("Row Win Val={} Count={}".format(c, count+1))
-                    self.count_to_check = count + 1
-                    self.called_num = c
-                    self._calc_magic()
+                    self._calc_magic(count + 1, c)
                     return True
-
+            # I didn't read the challenged and missed that bingo worked on rows too
+            # So looks a bit verbose
             for c_idx in range(len(self._cols)):
                 if c in self._cols[c_idx]:
                     self._cols[c_idx].remove(c)
                 if len(self._cols[c_idx]) == 0:
                     logging.debug("Col Win Val={} Count={}".format(c, count + 1))
-                    self.count_to_check = count + 1
-                    self.called_num = c
-                    self._calc_magic()
+                    self._calc_magic(count + 1, c)
                     return True
 
         return False
 
-    def _calc_magic(self):
+    def _calc_magic(self, count,  call):
+        self.count_to_check = count
+        self.called_num = call
         _row_sum = 0
         for r in self._rows:
             for c in r:
@@ -62,12 +63,13 @@ def get_win_count(obj: Board) :
     return obj.count_to_check
 
 
+# Read the input
 f = gzip.open("d4.txt.gz", 'rt')
 all_lines = f.readlines()
 f.close()
 check_line = all_lines.pop(0)
 verify_nums = list(map(lambda x: int(x), check_line.split(",")))
-all_lines.pop(0)
+all_lines.pop(0)  # Strip first newine
 
 # Create the boards
 boards = []
@@ -84,7 +86,6 @@ for b in boards:
     verify = b.verify_lines(verify_nums)
     if not verify:
         raise Exception("Board did not verify")
-
 
 win_board = sorted(boards, key=get_win_count)[0]
 print(repr(win_board))
