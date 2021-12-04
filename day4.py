@@ -79,7 +79,7 @@ for l in all_lines:
     else:
         board_lines.append(l)
 
-# Verify the win
+# Part 1
 for b in boards:
     verify = b.verify_lines(verify_nums)
     if not verify:
@@ -89,4 +89,10 @@ for b in boards:
 win_board = sorted(boards, key=get_win_count)[0]
 print(repr(win_board))
 if win_board.magic_score != 54275:
+    raise Exception("Wrong answer")
+
+# Part 2 just fell out! BOOM
+lose_board = sorted(boards, key=get_win_count)[-1]
+print(repr(lose_board))
+if lose_board.magic_score != 13158:
     raise Exception("Wrong answer")
