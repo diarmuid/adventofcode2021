@@ -164,3 +164,4 @@ for mline in alllines:
     matrixp.add_line(mline, diagonal=True)
 
 print("Danger points={}".format(matrixp.get_danger(2)))
+assert matrixp.get_danger(2) == 21305, "Wrong answer"
