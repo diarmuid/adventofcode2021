@@ -16,6 +16,11 @@ class Line(object):
         self.y2 = y2
 
     def to_points(self, diagonal: bool) -> dict:
+        """
+        Return the points of the line
+        :param diagonal: include 45 degree diagonals
+        :return:
+        """
         _points = {}
         if self.x1 == self.x2:
             _points[self.x1] = {}
@@ -45,6 +50,7 @@ class Line(object):
             if abs(self.x1 - self.x2) != abs(self.y1 - self.y2):
                 raise Exception("Diagonals should have matching lengths. {}".format(repr(self)))
             delta = abs(self.x1 - self.x2)
+            # Increasing or decreasing
             if self.x1 > self.x2:
                 x_operator = operator.sub
             else:
@@ -73,6 +79,9 @@ class Line(object):
 
 
 class Matrix(object):
+    """
+    Matrix representation
+    """
     def __init__(self, max_x: int, max_y: int) -> None:
         self._matrix = {}
         self._max_x = max_x
@@ -83,7 +92,12 @@ class Matrix(object):
                 self._matrix[x][y] = 0
 
     def add_line(self, line: Line, diagonal=False) -> bool:
-        """Add a line to the matrix"""
+        """
+        Add a line to the matrix.
+        :param line:
+        :param diagonal: Treat diagonals as danger points
+        :return:
+        """
         line_points = line.to_points(diagonal)
         logging.debug("Adding Line {} to matrix {}".format(line, self))
         for x, ydir in line_points.items():
@@ -93,6 +107,7 @@ class Matrix(object):
         return True
 
     def get_danger(self, dangerval=2) -> int:
+        """Find the danger points based on the number of lines intersecting"""
         _count = 0
         for x, ydir in self._matrix.items():
             for y, val in ydir.items():
@@ -119,9 +134,10 @@ def max(lines: [Line], dir) -> int:
             _max = l.y1
     return _max
 
-
+# All the lines in the file
 alllines = []
 
+#Read in the file and populate the list of lines
 f = open("d5.txt")
 for l in f.readlines():
     match = re.match(r"(\d+),(\d+)\s+->\s+(\d+),(\d+)", l.strip())
@@ -130,10 +146,11 @@ for l in f.readlines():
     else:
         raise Exception("Did not match on {}".format(l))
 
+# Find the limits for the matrix
 max_x = max(alllines, DIR_X)
 max_y = max(alllines, DIR_Y)
 
-#part 1
+#part 1 . Create the matrix, add the lines hor and vert only
 matrix = Matrix(max_x, max_y)
 for mline in alllines:
     matrix.add_line(mline)
