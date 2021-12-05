@@ -82,14 +82,8 @@ class Matrix(object):
     """
     Matrix representation
     """
-    def __init__(self, max_x: int, max_y: int) -> None:
+    def __init__(self) -> None:
         self._matrix = {}
-        self._max_x = max_x
-        self._max_y = max_y
-        for x in range(max_x+1):
-            self._matrix[x] = {}
-            for y in range(max_y+1):
-                self._matrix[x][y] = 0
 
     def add_line(self, line: Line, diagonal=False) -> bool:
         """
@@ -101,7 +95,11 @@ class Matrix(object):
         line_points = line.to_points(diagonal)
         logging.debug("Adding Line {} to matrix {}".format(line, self))
         for x, ydir in line_points.items():
+            if x not in self._matrix:
+                self._matrix[x] = {}
             for y, val in ydir.items():
+                if y not in self._matrix[x]:
+                    self._matrix[x][y] = 0
                 self._matrix[x][y] += val
 
         return True
@@ -117,22 +115,8 @@ class Matrix(object):
         return _count
 
     def __repr__(self):
-        return "MatrixMaxX={} MatrixMaxY={}".format(self._max_x, self._max_y)
+        return "MatrixMax"
 
-
-def max(lines: [Line], dir) -> int:
-    """Get the max coordinates in  a list of lines"""
-    _max = 0
-    for l in lines:
-        if dir == DIR_X and l.x2 > _max:
-            _max = l.x2
-        elif dir == DIR_X and l.x1 > _max:
-            _max = l.x1
-        elif dir == DIR_Y and l.y2 > _max:
-            _max = l.y2
-        elif dir == DIR_Y and l.y1 > _max:
-            _max = l.y1
-    return _max
 
 # All the lines in the file
 alllines = []
@@ -146,12 +130,8 @@ for l in f.readlines():
     else:
         raise Exception("Did not match on {}".format(l))
 
-# Find the limits for the matrix
-max_x = max(alllines, DIR_X)
-max_y = max(alllines, DIR_Y)
-
 #part 1 . Create the matrix, add the lines hor and vert only
-matrix = Matrix(max_x, max_y)
+matrix = Matrix()
 for mline in alllines:
     matrix.add_line(mline)
 
@@ -159,7 +139,7 @@ print("Danger points={}".format(matrix.get_danger(2)))
 assert matrix.get_danger(2) == 3990, "Wrong answer"
 
 # part 2
-matrixp = Matrix(max_x, max_y)
+matrixp = Matrix()
 for mline in alllines:
     matrixp.add_line(mline, diagonal=True)
 
