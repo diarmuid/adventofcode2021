@@ -23,9 +23,9 @@ class Population(object):
         # There's probably a more compact way of writing this
         for d in range(count):
             new_population = [0] * 9
-            new_population[8] = self._population_by_age[0]
-            for i in range(8, 0, -1):
+            for i in range(1, 9):
                 new_population[(i - 1)] = self._population_by_age[i]
+            new_population[8] = self._population_by_age[0]
             new_population[6] += self._population_by_age[0]
             self._population_by_age = new_population
 
