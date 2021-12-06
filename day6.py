@@ -18,15 +18,15 @@ test_num = INPUT_REAL
 
 
 class Population(object):
-    def __init__(self, instring):
-        self._population_by_age = defaultdict(int)  # Just keep a count of the number of fish of that age
+    def __init__(self, instring: str):
+        self._population_by_age = [0] * 9  # Just keep a count of the number of fish of that age
         for age in instring.split(","):
             self._population_by_age[int(age)] += 1
 
-    def add_day(self, count=1):
+    def add_day(self, count: int=1):
         # There's probably a more compact way of writing this
         for d in range(count):
-            new_population = defaultdict(int)
+            new_population = [0] * 9
             new_population[8] = self._population_by_age[0]
             for i in range(8, 0, -1):
                 new_population[(i - 1)] = self._population_by_age[i]
@@ -34,7 +34,7 @@ class Population(object):
             self._population_by_age = new_population
 
     def tot_population(self):
-        return sum(self._population_by_age.values())
+        return sum(self._population_by_age)
 
 
 population = Population(INPUT[test_num])
