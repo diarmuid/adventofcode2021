@@ -1,4 +1,3 @@
-import logging
 from collections import defaultdict
 
 INPUT_TEST = 0
@@ -13,7 +12,6 @@ INPUT = ["3,4,3,1,2",
 
 # AFter 18 and 80 days
 TEST_ANS = [26, 5934]
-
 
 
 test_num = INPUT_REAL
