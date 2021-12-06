@@ -1,5 +1,5 @@
 import logging
-
+from collections import defaultdict
 
 INPUT_TEST = 0
 INPUT_REAL = 1
@@ -14,40 +14,45 @@ INPUT = ["3,4,3,1,2",
 # AFter 18 and 80 days
 TEST_ANS = [26, 5934]
 
-TIME_LEN = {80 : 349549}
+
 
 test_num = INPUT_REAL
 
 
-class Fish(object):
-    def __init__(self, age):
-        self.age = age
+class Population(object):
+    def __init__(self, instring):
+        self._population_by_age = {}  # Just keep a count of the number of fish of that age
+        for d in range(9):
+            self._population_by_age[d] = 0
+        for age in instring.split(","):
+            self._population_by_age[int(age)] += 1
 
     def add_day(self):
-        r_fish = None
-        if self.age == 0:
-            self.age = 6
-            r_fish = Fish(8)
-            return r_fish
-        else:
-            self.age -= 1
-            return None
+        new_population = defaultdict(int)
+        new_population[8] = self._population_by_age[0]
+        for i in range(8, 0, -1):
+            new_population[(i - 1)] = self._population_by_age[i]
+        new_population[6] += self._population_by_age[0]
+        self._population_by_age = new_population
+
+    def tot_population(self):
+        tot_count = 0
+        for v in self._population_by_age.values():
+            tot_count += v
+        return tot_count
 
 
-for len_time, exp_ans in TIME_LEN.items():
-    all_fish = []
-    for age in INPUT[test_num].split(","):
-        all_fish.append(Fish(int(age)))
-    for day in range(len_time):
-        _new_fish = []
-        for f in all_fish:
-            newf = f.add_day()
-            if newf is not None:
-                logging.debug("New fish created")
-                _new_fish.append(newf)
-        all_fish += _new_fish
+population = Population(INPUT[test_num])
 
-    print("Length = {} NumFish={}".format(len_time, len(all_fish)))
-    assert len(all_fish) == exp_ans, "Should have {} fish but got {}".format(exp_ans, len(all_fish))
+for day in range(80):
+    population.add_day()
+print(population.tot_population())
+assert population.tot_population() == 349549, "Wrong"
 
-# Part 2 needs a maths and shoulld have been part 1
+# P2
+population = Population(INPUT[test_num])
+
+for day in range(256):
+    population.add_day()
+print(population.tot_population())
+assert population.tot_population() == 1589590444365, "Wrong"
