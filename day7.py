@@ -41,21 +41,26 @@ real_input= [1101,1,29,67,1102,0,1,65,1008,65,35,66,1005,66,28,1,67,65,20,4,0,10
 input_vectors = real_input
 _max_posn = max(input_vectors)
 _min_posn = min(input_vectors)
+
+# Part 1
 posn_cost = {}
 for p in range(_min_posn, _max_posn+1):
+    delta = p - _min_posn
     posn_cost[p] = sum(map(lambda x: abs(x - p), input_vectors))
 soln = min(posn_cost.values())
 print(soln)
-#assert soln == 352707, "Wrong answer"
+assert soln == 352707, "Wrong answer"
 
 # 1 , 2 , 3 ,4, 5
 # = 1+5, 2+4, 3
 # 1, 2, 3, 4, 5, 6
-# 1+6 2+5+3+4  n(n+1) / 2
+# 1+6 2+5+ 3+4  n(n+1) / 2
 
+# Part 2
 posn_cost = {}
 for p in range(_min_posn, _max_posn+1):
     delta = p - _min_posn
     posn_cost[p] = sum(map(lambda x: abs(x - delta)*(abs(x - delta) + 1)/2, input_vectors))
-soln = min(posn_cost.values())
+soln = int(min(posn_cost.values()))
 print(soln)
+assert soln == 95519693, "Wrong answer"
