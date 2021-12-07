@@ -44,5 +44,6 @@ _min_posn = min(input_vectors)
 posn_cost = {}
 for p in range(_min_posn, _max_posn+1):
     posn_cost[p] = sum(map(lambda x: abs(x - p), input_vectors))
-
-print(min(posn_cost.values()))
+soln = min(posn_cost.values())
+print(soln)
+assert soln == 352707, "Wrong answer"
