@@ -46,17 +46,15 @@ _min_posn = min(input_vectors)
 posn_cost = {}
 for p in range(_min_posn, _max_posn+1):
     delta = p - _min_posn
-    posn_cost[p] = sum(map(lambda x: abs(x - p), input_vectors))
+    posn_cost[p] = sum(map(lambda x: abs(x - delta), input_vectors))
 soln = min(posn_cost.values())
 print(soln)
 assert soln == 352707, "Wrong answer"
 
-# 1 , 2 , 3 ,4, 5
-# = 1+5, 2+4, 3
-# 1, 2, 3, 4, 5, 6
-# 1+6 2+5+ 3+4  n(n+1) / 2
 
 # Part 2
+# 1, 2, 3, 4, 5, 6
+# 1+6 2+5+ 3+4  n(n+1) / 2
 posn_cost = {}
 for p in range(_min_posn, _max_posn+1):
     delta = p - _min_posn
