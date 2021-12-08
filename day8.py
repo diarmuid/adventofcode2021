@@ -24,18 +24,20 @@ print(solnpart1)
 assert solnpart1 == 416, "wrong p1"
 
 
-class DigitCode(object):
-    def __init__(self, num, string):
-        self.num = num
-        self.codes = sorted(list(string))
+def to_codes(string):
+    """Convert the string to ordered list"""
+    return sorted(list(string))
 
-    def match(self, string):
-        compare_list = sorted(list(string))
-        if len(compare_list) != len(self.codes):
-            return False
-        if self.codes != compare_list:
-            return False
-        return True
+
+def compare_codes(codes, string):
+    """Compare the lists"""
+    compare_list = sorted(list(string))
+    if len(compare_list) != len(codes):
+        return False
+    if codes != compare_list:
+        return False
+    return True
+
 
 fname = "d8.txt"
 decoded_out = []
@@ -51,68 +53,68 @@ for l in f.readlines():
         input_codes.append(m)
 
     solutions = {}
-    # There's gotta be a better way
+    # There's gotta be a better way.
+    # Fall through each letter and decoded them by bulding on previous decide
     for i in input_codes:
         if len(i) == 2:
-            solutions[1] = DigitCode(1, i)
+            solutions[1] = to_codes(i)
         elif len(i) == 3:
-            solutions[7] = DigitCode(7, i)
+            solutions[7] = to_codes(i)
         elif len(i) == 4:
-            solutions[4] = DigitCode(4, i)
+            solutions[4] = to_codes(i)
         elif len(i) == 7:
-            solutions[8] = DigitCode(8, i)
+            solutions[8] = to_codes(i)
+    # We know 1,7,4,8. Use that to work out a few more
     for i in input_codes:
         if len(i) == 5: # 2,3 or 5
             is_match = True
-            for _x in solutions[1].codes:
+            for _x in solutions[1]:
                 if _x not in list(i):
                     is_match = False
             if is_match:
-                solutions[3] = DigitCode(3, i)
+                solutions[3] = to_codes(i)
                 continue
 
         if len(i) == 6: # 6 or 9 or 0
             is_match = True
-            for _x in solutions[4].codes:
+            for _x in solutions[4]:
                 if _x not in list(i):
                     is_match = False
             if is_match:
-                solutions[9] = DigitCode(9, i)
+                solutions[9] = to_codes(i)
                 continue
             is_match = True
-            for _x in solutions[1].codes:
+            for _x in solutions[1]:
                 if _x not in list(i):
                     is_match = False
             if is_match:
-                solutions[0] = DigitCode(0, i)
+                solutions[0] = to_codes(i)
             else:
-                solutions[6] = DigitCode(6, i)
-
+                solutions[6] = to_codes(i)
+    # Only 2 or 5 left. Counmt the overlap with 6 and work out which is which
     for i in input_codes: # 2 or 5
         if len(i) == 5:  # 2 5
-            if solutions[3].match(i):
+            if compare_codes(solutions[3], i):
                 continue
             over_lap_with_6 = 0
-            for c in solutions[6].codes:
+            for c in solutions[6]:
                 if c in list(i):
                     over_lap_with_6 += 1
             if over_lap_with_6 == 5:
-                solutions[5] = DigitCode(5, i)
+                solutions[5] = to_codes(i)
             else:
-                solutions[2] = DigitCode(2, i)
+                solutions[2] = to_codes(i)
 
     assert len(solutions) == 10, "Should have 10 solutions"
 
     decoded = []
     for output in output_values:
-        for v in solutions.values():
-            if v.match(output):
-                decoded.append(v.num)
+        for num in solutions:
+            if compare_codes(solutions[num], output):
+                decoded.append(num)
                 continue
     combined = "".join((map(str, decoded)))
-    #print(combined)
     decoded_out.append(combined)
-    #assert combined == str(5353)
 
 solnpart2 = sum(map(lambda x: int(x), decoded_out))
 print(solnpart2)
