@@ -39,6 +39,14 @@ def compare_codes(codes, string):
     return True
 
 
+def contains_all(codes, string):
+    is_match = True
+    for _x in codes:
+        if _x not in list(string):
+            is_match = False
+    return is_match
+
+
 fname = "d8.txt"
 decoded_out = []
 f = open(fname)
@@ -67,35 +75,20 @@ for l in f.readlines():
     # We know 1,7,4,8. Use that to work out a few more
     for i in input_codes:
         if len(i) == 5: # 2,3 or 5
-            is_match = True
-            for _x in solutions[1]:
-                if _x not in list(i):
-                    is_match = False
-            if is_match:
+            if contains_all(solutions[1], i):
                 solutions[3] = to_codes(i)
                 continue
-
         if len(i) == 6: # 6 or 9 or 0
-            is_match = True
-            for _x in solutions[4]:
-                if _x not in list(i):
-                    is_match = False
-            if is_match:
+            if contains_all(solutions[4], i):
                 solutions[9] = to_codes(i)
                 continue
-            is_match = True
-            for _x in solutions[1]:
-                if _x not in list(i):
-                    is_match = False
-            if is_match:
+            if contains_all(solutions[1], i):
                 solutions[0] = to_codes(i)
             else:
                 solutions[6] = to_codes(i)
-    # Only 2 or 5 left. Counmt the overlap with 6 and work out which is which
+    # Only 2 or 5 left. Count the overlap with 6 and work out which is which
     for i in input_codes: # 2 or 5
-        if len(i) == 5:  # 2 5
-            if compare_codes(solutions[3], i):
-                continue
+        if len(i) == 5 and not compare_codes(solutions[3], i):  # 2 5
             over_lap_with_6 = 0
             for c in solutions[6]:
                 if c in list(i):
