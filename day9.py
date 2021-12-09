@@ -60,12 +60,12 @@ def get_locality(lol: dict, pt: Pt):
     """Get the points in the locality of the specified point"""
     locality = set()
     for (x_dlt, y_dlt) in [(-1, 0), (1, 0), (0, -1), (0, 1)]:
-            try:
-                _s = lol[pt.y + y_dlt][pt.x + x_dlt]
-            except:
-                pass
-            else:
-                locality.add(Pt(pt.x + x_dlt, pt.y + y_dlt))
+        try:
+            _s = lol[pt.y + y_dlt][pt.x + x_dlt]
+        except:
+            pass
+        else:
+            locality.add(Pt(pt.x + x_dlt, pt.y + y_dlt))
     return locality
 
 
