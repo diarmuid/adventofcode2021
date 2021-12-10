@@ -1,11 +1,10 @@
 import RealInput
 import re
 import logging
-from functools import reduce
 
 
-brks = re.compile(r"(\[\]|\(\)|{}|<>)")
-illegal_bkts = re.compile(r"(\[}|\[\)|\[>|"
+brks = re.compile(r"(\[\]|\(\)|{}|<>)")  # Match the good bracket pairs
+illegal_bkts = re.compile(r"(\[}|\[\)|\[>|"   # Match bad bracket pairs
                           r"{\]|{\)|{>|"
                           r"\(\]|\(}|\(>|"
                           r"<\]|<\)|<})")
@@ -22,7 +21,7 @@ for i, modified_line in enumerate(RealInput.RealInput.DAY10.splitlines()):
         m = illegal_bkts.search(modified_line)
         if m:
             (openb, closeb) = list(m.group(1))
-            logging.debug("{}:{}:{}:{}".format(i, m.start(), m.group(), COSTS[closeb] * m.start()))
+            logging.debug("{}:{}:{}:{}".format(i, m.start(), m.group(), COSTS[closeb]))
             running_cost += COSTS[closeb]
             keep_iterating = False
             incomplete_line = False
