@@ -1,67 +1,57 @@
 import re
 import RealInput
-from collections import namedtuple, Counter
+from collections import namedtuple, Counter, defaultdict
 
-Rule = namedtuple("Rule", ["pair", "ins"])
-
-
-class Polymer(object):
-    def __init__(self, as_string):
-        self._as_string = as_string
-        self._pairs = []
-        self._to_pairs(as_string)
-        self._intermediate = None
-
-    def _to_pairs(self, _string):
-        for i in range(0, len(_string)-1):
-            self._pairs.append(_string[i:i+2])
-
-    def add_rule(self, rule: Rule):
-        for i,p in enumerate(self._pairs):
-            if len(p) !=2:
-                continue
-            if p == rule.pair:
-                _split = list(rule.pair)
-                self._pairs[i] = _split[0]+rule.ins+_split[1]
-
-    def apply_step(self):
-        self._as_string = ""
-        for i, p in enumerate(self._pairs):
-            self._as_string += p
-            if i != len(self._pairs)-1:
-                self._as_string = self._as_string[:-1]
-        self._pairs = []
-        self._to_pairs(self._as_string)
-
-    def __repr__(self):
-        return self._as_string
+Rule = namedtuple("Rule", ["matchpair", "incpair", "incpair2"])
 
 
-data_in = RealInput.RealInput.DAY14
-poly = Polymer(data_in.splitlines(keepends=False)[0])
+def string_to_dict(str):
+    pair_counts =  defaultdict(int)
+    for i in range(len(str) - 1):
+        if str[i:i + 2] not in pair_counts:
+            pair_counts[str[i:i + 2]] = 0
+        pair_counts[str[i:i + 2]] += 1
+    return  pair_counts
+
+
+def pair_count_to_counter(pair_counts):
+    counter = defaultdict(int)
+    for p,v in pair_counts.items():
+        if v > 0:
+            letters = list(p)
+            for l in letters:
+                counter[l] += v
+    return counter
+
+
+data_in = RealInput.RealInput.DAY14TST
+tst_results =["NCNBCHB", "NBCCNBBBCBHCB", "NBBBCNCCNBBNBNBBCHBHHBCHB", "NBBNBNBBCCNBCNCCNBBNBBNBBBNBBNBBCBHCBHHNHCBBCBHCB"]
+pair_counts = string_to_dict(data_in.splitlines(keepends=False)[0])
+
 rules = []
 for l in data_in.splitlines(keepends=False)[2:]:
     (_pair, _ins) = l.split(" -> ")
-    rules.append(Rule(_pair, _ins))
+    rules.append(Rule(_pair, _pair[0]+_ins, _ins+_pair[1]))
 
-steps = 10
+steps = 4
 for s in range(steps):
-    for rule in rules:
-        poly.add_rule(rule)
-    poly.apply_step()
-    to_count = Counter(list(repr(poly)))
-    sort_count = sorted(to_count.values(), reverse=True)
-    print("{},{}".format(s, sort_count[0] - sort_count[-1]))
+    _delta = defaultdict(int)
+    for p in pair_counts:
+        for r in rules:
+            if p == r.matchpair:
+                _delta[r.incpair] += 1
+                _delta[r.incpair2] += 1
+                _delta[r.matchpair] -= 1
+    for _p, change in _delta.items():
+        if pair_counts[_p] + change >= 0:
+            pair_counts[_p] += change
+        else:
+            pair_counts[_p] = 0
 
-    #print(poly)
+    print(pair_counts)
+    print(string_to_dict(tst_results[s]))
+    print(sum(pair_counts.values())+1)
 
-#assert len(repr(poly))==3073, "wrong"
-#to_count = Counter(list(repr(poly)))
-#sort_count = sorted(to_count.values(), reverse=True)
-#print(sort_count[0] - sort_count[-1])
-
-#y = 2425216000 + (40.2906 - 2425216000)/(1 + (x/81.7808)^6.39633)
-steps = 40
-predict = 2425216000 + (40.2906 - 2425216000)/(1 + pow(steps/81.7808, 6.39633))
-print(predict)
-#24754299
+print(sum(pair_counts.values()) + 1)
+print(pair_count_to_counter(pair_counts))
+pass
