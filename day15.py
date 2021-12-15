@@ -13,7 +13,7 @@ class Graph:
         self.edges[v][u] = weight
 
     def path_find(graph, start_vertex):
-        D = {v: float('inf') for v in range(graph.v)}
+        D = {v: float("inf") for v in range(graph.v)}
         D[start_vertex] = 0
 
         pq = PriorityQueue()
@@ -35,7 +35,7 @@ class Graph:
         return D
 
 
-data_in = RealInput.RealInput.DAY15TST
+data_in = RealInput.RealInput.DAY15
 max_y = len(data_in.splitlines(keepends=False))
 max_x = len(list(data_in.splitlines(keepends=False)[0]))
 
@@ -46,16 +46,20 @@ for y,l in enumerate(data_in.splitlines(keepends=False)):
     input_matrix[y] = list(map(lambda x: int(x), list(l)))
 
 point_idx = 0
+edges_added = 0
 for y in range(max_y):
     for x in range(max_x):
-        _adj = point_idx + 1
+        _after = point_idx + 1
         _below = point_idx + max_x
-        if x < (max_x-1):
-            cave.add_edge(point_idx, _adj, input_matrix[y][x+1])
-        if y < max_y-1:
+        if x < (max_x - 1):
+            cave.add_edge(point_idx, _after, input_matrix[y][x+1])
+            edges_added += 1
+        if y < (max_y - 1):
             cave.add_edge(point_idx, _below, input_matrix[y+1][x])
+            edges_added += 1
         point_idx += 1
 
+print("edges={}".format(edges_added))
 start_node = 0
 end_node = max_x * max_y - 1
 D = cave.path_find(start_node)
